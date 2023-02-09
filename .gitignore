@@ -1,0 +1,15 @@
+# Node.js
+node_modules/
+coverage/
+dist/
+
+# OS
+.DS_Store
+
+# Debug
+npm-debug.log
+yarn-error.log
+
+project
+project.sb3
+test
