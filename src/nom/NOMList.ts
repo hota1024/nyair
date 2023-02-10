@@ -1,11 +1,11 @@
 import { Node, NodeKind, NodeOf } from '@/ast/Node'
-import { ModelList } from './interfaces'
+import { Model, ModelList } from './interfaces'
 import { NOM } from './NOM'
 
 export class NOMList implements ModelList {
-  constructor(private models: NOM[] = []) {}
+  constructor(private models: Model[] = []) {}
 
-  get(index: number): NOM<Node> {
+  get(index: number): Model<Node> {
     return this.models[index]
   }
 
@@ -17,31 +17,31 @@ export class NOMList implements ModelList {
     this.models = []
   }
 
-  push(model: NOM): void {
+  push(model: Model): void {
     this.models.push(model)
   }
 
-  insertAt(index: number, model: NOM): void {
+  insertAt(index: number, model: Model): void {
     this.models.splice(index, 0, model)
   }
 
-  insertBefore(legend: NOM, model: NOM): void {
+  insertBefore(legend: Model, model: Model): void {
     const index = this.models.indexOf(legend)
     this.models.splice(index, 0, model)
   }
 
-  insertAfter(legend: NOM, model: NOM): void {
+  insertAfter(legend: Model, model: Model): void {
     const index = this.models.indexOf(legend)
     this.models.splice(index + 1, 0, model)
   }
 
-  setChildrenParent(model: NOM<Node>): void {
+  setChildrenParent(model: Model<Node>): void {
     this.models.forEach((m) => {
       m.setParent(model)
     })
   }
 
-  replaceModel(oldModel: NOM, newModel: NOM): void {
+  replaceModel(oldModel: Model, newModel: Model): void {
     this.models = this.models.map((model) => {
       if (model === oldModel) {
         return newModel

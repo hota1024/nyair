@@ -1,5 +1,4 @@
 import { Node, NodeKind, NodeOf } from '@/ast/Node'
-import { NodeOperator, NodeOperatorAdd } from '@/ast/nodes/operators'
 import { Model, ModelizeFields } from './interfaces'
 import { NOMList } from './NOMList'
 
@@ -8,7 +7,7 @@ class NomBase<N extends Node, F extends ModelizeFields<N> = ModelizeFields<N>>
   readonly kind: N['kind']
 
   private fieldKeys: (keyof F)[] = []
-  private parentModel: NOM | null = null
+  private parentModel: Model | null = null
 
   constructor(kind: N['kind']) {
     this.kind = kind
@@ -24,15 +23,15 @@ class NomBase<N extends Node, F extends ModelizeFields<N> = ModelizeFields<N>>
       self[name] = field
 
       if (field instanceof NomBase) {
-        field.setParent(this.nom)
+        field.setParent(this)
       } else if (field instanceof NOMList) {
-        field.setChildrenParent(this.nom)
+        field.setChildrenParent(this)
       }
     })
   }
 
-  replaceFieldModel(oldField: NOM, newField: NOM): void {
-    newField.setParent(this.nom)
+  replaceFieldModel(oldField: Model, newField: Model): void {
+    newField.setParent(this)
 
     this.forEachFields((name, field) => {
       if (field instanceof NomBase && field === oldField) {
@@ -44,14 +43,14 @@ class NomBase<N extends Node, F extends ModelizeFields<N> = ModelizeFields<N>>
     })
   }
 
-  replaceWith(model: NOM): void {
+  replaceWith(model: Model): void {
     const parent = this.parent()
 
     if (!parent) {
       throw new Error('NomBase#replaceWith is avaiable only if it has a parent')
     }
 
-    parent.replaceFieldModel(this.nom, model)
+    parent.replaceFieldModel(this, model)
   }
 
   toNode(): N {
@@ -73,11 +72,11 @@ class NomBase<N extends Node, F extends ModelizeFields<N> = ModelizeFields<N>>
     return node as N
   }
 
-  setParent(model: NOM): void {
+  setParent(model: Model): void {
     this.parentModel = model
   }
 
-  parent(): NOM | null {
+  parent(): Model | null {
     return this.parentModel
   }
 
@@ -108,18 +107,12 @@ class NomBase<N extends Node, F extends ModelizeFields<N> = ModelizeFields<N>>
   private get self(): F {
     return (this as unknown) as F
   }
-
-  private get nom(): NOM {
-    return (this as unknown) as NOM
-  }
 }
 
 export type NOM<N extends Node = Node> = NomBase<N> & ModelizeFields<N>
 export type NOMConstructor<N extends Node = Node> = new (
   fields: ModelizeFields<N>
 ) => NOM<N>
-
-type A = NomBase<NodeOperatorAdd> extends NomBase<NodeOperator> ? true : false
 
 export const createNomClass = <
   K extends NodeKind,

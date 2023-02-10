@@ -6,9 +6,9 @@ export type ModelizeFields<
   F extends NodeFields<N> = NodeFields<N>
 > = {
   [K in keyof F]: F[K] extends InputNodeOf<infer T>
-    ? NOM<InputNodeOf<T>>
+    ? Model<InputNodeOf<T>>
     : F[K] extends Node
-    ? NOM<F[K]>
+    ? Model<F[K]>
     : F[K] extends Node[]
     ? ModelList
     : F[K]
@@ -43,7 +43,7 @@ export interface ModelList extends HasModelQuery {
    *
    * @param model model.
    */
-  push(model: NOM): void
+  push(model: Model): void
 
   /**
    * insert a model at the specified index.
@@ -51,7 +51,7 @@ export interface ModelList extends HasModelQuery {
    * @param index index.
    * @param model model.
    */
-  insertAt(index: number, model: NOM): void
+  insertAt(index: number, model: Model): void
 
   /**
    * insert a model at before the specified legend model.
@@ -59,7 +59,7 @@ export interface ModelList extends HasModelQuery {
    * @param legend legend model.
    * @param model model to insert.
    */
-  insertBefore(legend: NOM, model: NOM): void
+  insertBefore(legend: Model, model: Model): void
 
   /**
    * insert a model at after the specified legend model.
@@ -67,14 +67,14 @@ export interface ModelList extends HasModelQuery {
    * @param legend legend model.
    * @param model model to insert.
    */
-  insertAfter(legend: NOM, model: NOM): void
+  insertAfter(legend: Model, model: Model): void
 
   /**
    * set parent model of children.
    *
    * @param model parent model.
    */
-  setChildrenParent(model: NOM): void
+  setChildrenParent(model: Model): void
 
   /**
    * replace a model.
@@ -82,7 +82,7 @@ export interface ModelList extends HasModelQuery {
    * @param oldModel old model.
    * @param newModel new model.
    */
-  replaceModel(oldModel: NOM, newModel: NOM): void
+  replaceModel(oldModel: Model, newModel: Model): void
 
   /**
    * returns a node array.
@@ -109,7 +109,7 @@ export interface Model<N extends Node = Node> extends HasModelQuery {
    * @param oldField old field model.
    * @param newField new field model.
    */
-  replaceFieldModel(oldField: NOM, newField: NOM): void
+  replaceFieldModel(oldField: Model, newField: Model): void
 
   /**
    * replace this model with the specified model.
@@ -118,7 +118,7 @@ export interface Model<N extends Node = Node> extends HasModelQuery {
    *
    * @param model new model.
    */
-  replaceWith(model: NOM): void
+  replaceWith(model: Model): void
 
   /**
    * returns a node.
@@ -130,12 +130,12 @@ export interface Model<N extends Node = Node> extends HasModelQuery {
    *
    * @param model parent model.
    */
-  setParent(model: NOM): void
+  setParent(model: Model): void
 
   /**
    * returns a parent model.
    */
-  parent(): NOM | null
+  parent(): Model | null
 
   /**
    * returns whether the model is the specified kind.
