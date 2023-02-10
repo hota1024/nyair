@@ -171,14 +171,14 @@ class ProcedureTable {
   }
 }
 
-class BlockCompiler {
+export class BlockCompiler {
   private blocks: Blocks = {}
   private procedureTable = new ProcedureTable()
 
   constructor(
-    private readonly variableTable: SymbolTable,
-    private readonly listTable: SymbolTable,
-    private readonly broadcastTable: SymbolTable
+    private readonly variableTable = new SymbolTable(),
+    private readonly listTable = new SymbolTable(),
+    private readonly broadcastTable = new SymbolTable()
   ) {}
 
   compile(nodes: Node[]): Blocks {
