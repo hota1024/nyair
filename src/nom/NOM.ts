@@ -1,16 +1,36 @@
-import { Node, NodeKind, NodeOf } from '@/ast/Node'
-import { Model, ModelizeFields } from './interfaces'
+import { InputNodeOf, Node, NodeFields, NodeKind, NodeOf } from '@/ast/Node'
+import { Model, ModelizeFields, ModelList } from './interfaces'
 import { NOMList } from './NOMList'
+import { HasNomChildren } from './NomQuery'
 
 class NomBase<N extends Node, F extends ModelizeFields<N> = ModelizeFields<N>>
+  extends HasNomChildren
   implements Model<N> {
   readonly kind: N['kind']
 
   private fieldKeys: (keyof F)[] = []
   private parentModel: Model | null = null
+  private _children: Model[] = []
 
   constructor(kind: N['kind']) {
+    super()
     this.kind = kind
+  }
+
+  children() {
+    return this._children as NOM[]
+  }
+
+  private updateChildren() {
+    this._children = []
+
+    this.forEachFields((name, field) => {
+      if (field instanceof NomBase) {
+        this._children.push(field.typeAsGenericNom())
+      } else if (field instanceof NOMList) {
+        this._children.push(...field.children())
+      }
+    })
   }
 
   set(fields: F): void {
@@ -23,24 +43,26 @@ class NomBase<N extends Node, F extends ModelizeFields<N> = ModelizeFields<N>>
       self[name] = field
 
       if (field instanceof NomBase) {
-        field.setParent(this)
+        field.setParent(this.typeAsGenericNom())
       } else if (field instanceof NOMList) {
-        field.setChildrenParent(this)
+        field.setChildrenParent(this.typeAsGenericNom())
       }
     })
+    this.updateChildren()
   }
 
-  replaceFieldModel(oldField: Model, newField: Model): void {
-    newField.setParent(this)
+  replaceFieldModel(oldField: NOM, newField: NOM): void {
+    newField.setParent(this.typeAsGenericNom())
 
     this.forEachFields((name, field) => {
       if (field instanceof NomBase && field === oldField) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.self[name] = newField as any
       } else if (field instanceof NOMList) {
-        field.replaceModel(oldField, newField)
+        field.replaceNode(oldField, newField)
       }
     })
+    this.updateChildren()
   }
 
   replaceWith(model: Model): void {
@@ -84,6 +106,10 @@ class NomBase<N extends Node, F extends ModelizeFields<N> = ModelizeFields<N>>
     return this.kind === kind
   }
 
+  in<K extends NodeKind>(kind: K[]): this is NOM<NodeOf<K>> {
+    return kind.includes(this.kind as K)
+  }
+
   listByKind<K extends NodeKind>(kind: K): NOM<NodeOf<K>>[] {
     const result: NOM<NodeOf<K>>[] = []
 
@@ -107,9 +133,26 @@ class NomBase<N extends Node, F extends ModelizeFields<N> = ModelizeFields<N>>
   private get self(): F {
     return (this as unknown) as F
   }
+
+  private typeAsGenericNom(): NOM {
+    return (this as unknown) as NOM
+  }
 }
 
-export type NOM<N extends Node = Node> = NomBase<N> & ModelizeFields<N>
+export type NomFields<
+  N extends Node,
+  F extends NodeFields<N> = NodeFields<N>
+> = {
+  [K in keyof F]: F[K] extends InputNodeOf<infer T>
+    ? NOM<InputNodeOf<T>>
+    : F[K] extends Node
+    ? NOM<F[K]>
+    : F[K] extends Node[]
+    ? ModelList
+    : F[K]
+}
+
+export type NOM<N extends Node = Node> = NomBase<N> & NomFields<N>
 export type NOMConstructor<N extends Node = Node> = new (
   fields: ModelizeFields<N>
 ) => NOM<N>

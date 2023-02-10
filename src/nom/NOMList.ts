@@ -1,50 +1,57 @@
 import { Node, NodeKind, NodeOf } from '@/ast/Node'
 import { Model, ModelList } from './interfaces'
 import { NOM } from './NOM'
+import { HasNomChildren } from './NomQuery'
 
-export class NOMList implements ModelList {
-  constructor(private models: Model[] = []) {}
+export class NOMList extends HasNomChildren implements ModelList {
+  constructor(private nodes: Model[] = []) {
+    super()
+  }
 
-  get(index: number): Model<Node> {
-    return this.models[index]
+  children(): NOM[] {
+    return this.nodes as NOM[]
+  }
+
+  get(index: number): NOM<Node> {
+    return this.nodes[index] as NOM<Node>
   }
 
   remove(index: number): void {
-    this.models.splice(index, 1)
+    this.nodes.splice(index, 1)
   }
 
   clear(): void {
-    this.models = []
+    this.nodes = []
   }
 
-  push(model: Model): void {
-    this.models.push(model)
+  push(model: NOM): void {
+    this.nodes.push(model)
   }
 
-  insertAt(index: number, model: Model): void {
-    this.models.splice(index, 0, model)
+  insertAt(index: number, model: NOM): void {
+    this.nodes.splice(index, 0, model)
   }
 
-  insertBefore(legend: Model, model: Model): void {
-    const index = this.models.indexOf(legend)
-    this.models.splice(index, 0, model)
+  insertBefore(legend: NOM, model: NOM): void {
+    const index = this.nodes.indexOf(legend)
+    this.nodes.splice(index, 0, model)
   }
 
-  insertAfter(legend: Model, model: Model): void {
-    const index = this.models.indexOf(legend)
-    this.models.splice(index + 1, 0, model)
+  insertAfter(legend: NOM, model: NOM): void {
+    const index = this.nodes.indexOf(legend)
+    this.nodes.splice(index + 1, 0, model)
   }
 
-  setChildrenParent(model: Model<Node>): void {
-    this.models.forEach((m) => {
+  setChildrenParent(model: NOM<Node>): void {
+    this.nodes.forEach((m) => {
       m.setParent(model)
     })
   }
 
-  replaceModel(oldModel: Model, newModel: Model): void {
-    this.models = this.models.map((model) => {
-      if (model === oldModel) {
-        return newModel
+  replaceNode(oldNOM: NOM, newNOM: NOM): void {
+    this.nodes = this.nodes.map((model) => {
+      if (model === oldNOM) {
+        return newNOM
       }
 
       return model
@@ -54,7 +61,7 @@ export class NOMList implements ModelList {
   toNodeArray(): Node[] {
     const result: Node[] = []
 
-    this.models.forEach((model) => {
+    this.nodes.forEach((model) => {
       result.push(model.toNode())
     })
 
@@ -64,7 +71,7 @@ export class NOMList implements ModelList {
   listByKind<K extends NodeKind>(kind: K): NOM<NodeOf<K>>[] {
     const result: NOM<NodeOf<K>>[] = []
 
-    this.models.forEach((model) => {
+    this.nodes.forEach((model) => {
       if (model.is(kind)) {
         result.push(model as NOM<NodeOf<K>>)
       }

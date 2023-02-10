@@ -1,7 +1,11 @@
-import { InputNode, InputNodeOf, Node, NodeKind, NodeOf } from '@/ast/Node'
-import { NodeOperator, NodeOperatorAdd } from '@/ast/nodes/operators'
+import { NodeKind, NodeOf } from '@/ast/Node'
+import {
+  Node$LiteralBoolean,
+  Node$LiteralNumber,
+  Node$LiteralString,
+} from '@/ast/nodes/literals'
 import { ScratchValue } from '@/sb3/ScratchValue'
-import { ModelizeFields } from './interfaces'
+import { Model, ModelizeFields } from './interfaces'
 import { createNomClass, NOM, NOMConstructor } from './NOM'
 import { NOMList } from './NOMList'
 
@@ -20,39 +24,34 @@ export const createNom = <K extends NodeKind, N extends NodeOf<K> = NodeOf<K>>(
   return new nomClass(fields)
 }
 
-export const createNomList = (nomArray: NOM[]): NOMList => new NOMList(nomArray)
+export const createNomList = (nomArray: Model[]): NOMList =>
+  new NOMList(nomArray)
 
-// const nom = createNom('looks_say', {
-//   message: createNom('operator_add', {
-//     num1: createNomValue(1),
-//     num2: createNom('operator_add', {
-//       num1: createNomValue(2),
-//       num2: createNomValue(3),
-//     }),
-//   }),
-// })
+type ScratchValueToLiteral<T extends ScratchValue> = T extends number
+  ? Node$LiteralNumber
+  : T extends string
+  ? Node$LiteralString
+  : T extends boolean
+  ? Node$LiteralBoolean
+  : never
 
-const nom = createNom('control_if', {
-  condition: createNom('$literal_boolean', { value: true }),
-  substack: createNomList([]),
-})
-
-type A = NOM<NodeOperatorAdd> extends NOM<NodeOperator> ? true : false
-type B = ModelizeFields<NodeOperatorAdd> extends ModelizeFields<NodeOperator>
-  ? true
-  : false
-
-const isStaticNode = (node: NOM): boolean => {
-  if (node.is('$literal_number')) {
-    return true
+export const createNomValue = <
+  T extends ScratchValue,
+  N extends ScratchValueToLiteral<T> = ScratchValueToLiteral<T>
+>(
+  value: T
+): NOM<N> => {
+  if (typeof value === 'number') {
+    return createNom('$literal_number', { value }) as NOM<N>
   }
 
-  if (node.is('operator_add')) {
-    node.num1
-    return isStaticNode(node.num1) && isStaticNode(node.num2)
+  if (typeof value === 'string') {
+    return createNom('$literal_string', { value }) as NOM<N>
   }
 
-  return false
+  if (typeof value === 'boolean') {
+    return createNom('$literal_boolean', { value }) as NOM<N>
+  }
+
+  throw new Error(`invaid value: ${value}`)
 }
-
-console.log(JSON.stringify(nom.toNode(), null, 2))

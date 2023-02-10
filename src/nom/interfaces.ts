@@ -82,7 +82,7 @@ export interface ModelList extends HasModelQuery {
    * @param oldModel old model.
    * @param newModel new model.
    */
-  replaceModel(oldModel: Model, newModel: Model): void
+  replaceNode(oldModel: Model, newModel: Model): void
 
   /**
    * returns a node array.
@@ -143,4 +143,11 @@ export interface Model<N extends Node = Node> extends HasModelQuery {
    * @param kind kind.
    */
   is<K extends NodeKind>(kind: K): this is NOM<NodeOf<K>>
+
+  /**
+   * returns whether the model is the specified kind.
+   *
+   * @param kind kind.
+   */
+  in<K extends NodeKind>(kind: K[]): this is NOM<NodeOf<K>>
 }
