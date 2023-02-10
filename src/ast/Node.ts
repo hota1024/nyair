@@ -39,3 +39,5 @@ export type NodeKind = Node['kind']
 export type NodeOf<K extends NodeKind, N = Node> = N extends { kind: K }
   ? N
   : never
+
+export type NodeFields<N extends Node> = Omit<N, 'kind'>
