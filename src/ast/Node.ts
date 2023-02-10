@@ -23,9 +23,19 @@ export type Node =
   | NodeSensing
   | NodeSound
   | NodeProcedures
-export type InputNode = Node | ScratchValue
+
+// ↓ this type is old. now we can't use ScratchValue as a Node for NOM.
+// export type InputNode = Node | ScratchValue
+
+export type InputNode = Node
+
 export type InputNodeOf<T extends ScratchValue, N = Node> = N extends {
   $__RETURN_TYPE?: T
 }
-  ? N | T
+  ? N
+  : never
+
+export type NodeKind = Node['kind']
+export type NodeOf<K extends NodeKind, N = Node> = N extends { kind: K }
+  ? N
   : never

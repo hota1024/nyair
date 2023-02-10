@@ -3,13 +3,13 @@ import { UnionString } from '@/UnionString'
 import { InputNode, Node } from '../Node'
 import { NodeBase } from '../NodeBase'
 
-export type ProceduresDefinition = NodeBase & {
+export type NodeProceduresDefinition = NodeBase & {
   kind: 'procedures_definition'
   customBlock: InputNode
   body: Node[]
 }
 
-export type ProceduresPrototype = NodeBase & {
+export type NodeProceduresPrototype = NodeBase & {
   kind: 'procedures_prototype'
   procCode: UnionString<'%s' | '%b'>[]
   arguments: InputNode[]
@@ -27,13 +27,13 @@ export type ArgumentReporterBoolean = NodeBase & {
   name: string
 }
 
-export type ProceduresCall = NodeBase & {
+export type NodeProceduresCall = NodeBase & {
   kind: 'procedures_call'
   procCode: UnionString<'%s' | '%b'>[]
   arguments: InputNode[]
 }
 
-export type $ProcDef = NodeBase & {
+export type Node$ProcDef = NodeBase & {
   kind: '$proc_def'
   name: string
   schema: (string | { name: string; type: 'string_number' | 'boolean' })[]
@@ -41,17 +41,17 @@ export type $ProcDef = NodeBase & {
   body: Node[]
 }
 
-export type $ProcCall = NodeBase & {
+export type Node$ProcCall = NodeBase & {
   kind: '$proc_call'
   name: string
   arguments: InputNode[]
 }
 
 export type NodeProcedures =
-  | ProceduresDefinition
-  | ProceduresPrototype
+  | NodeProceduresDefinition
+  | NodeProceduresPrototype
   | ArgumentReporterStringNumber
   | ArgumentReporterBoolean
-  | ProceduresCall
-  | $ProcDef
-  | $ProcCall
+  | NodeProceduresCall
+  | Node$ProcDef
+  | Node$ProcCall

@@ -1,33 +1,33 @@
 import { NodeBase } from '../NodeBase'
 
-export type $LiteralNumber = NodeBase<number> & {
+export type Node$LiteralNumber = NodeBase<number> & {
   kind: '$literal_number'
   value: number | string
 }
 
-export type $LiteralBoolean = NodeBase<boolean> & {
+export type Node$LiteralBoolean = NodeBase<boolean> & {
   kind: '$literal_boolean'
   value: boolean
 }
 
-export type $LiteralString = NodeBase<string> & {
+export type Node$LiteralString = NodeBase<string> & {
   kind: '$literal_string'
   value: string | number
 }
 
-export type $LiteralBroadcast = NodeBase<string> & {
+export type Node$LiteralBroadcast = NodeBase<string> & {
   kind: '$literal_broadcast'
   value: string
 }
 
-export type $LiteralColor = NodeBase<string> & {
+export type Node$LiteralColor = NodeBase<string> & {
   kind: '$literal_color'
   value: `#${string}` | number
 }
 
 export type NodeLiteral =
-  | $LiteralNumber
-  | $LiteralBoolean
-  | $LiteralString
-  | $LiteralBroadcast
-  | $LiteralColor
+  | Node$LiteralNumber
+  | Node$LiteralBoolean
+  | Node$LiteralString
+  | Node$LiteralBroadcast
+  | Node$LiteralColor

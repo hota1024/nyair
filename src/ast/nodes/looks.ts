@@ -9,135 +9,135 @@ import {
 import { InputNode } from '../Node'
 import { NodeBase } from '../NodeBase'
 
-export type LooksSayForSecs = NodeBase & {
+export type NodeLooksSayForSecs = NodeBase & {
   kind: 'looks_sayforsecs'
   message: InputNode
   secs: InputNode
 }
 
-export type LooksSay = NodeBase & {
+export type NodeLooksSay = NodeBase & {
   kind: 'looks_say'
   message: InputNode
 }
 
-export type LooksThinkForSecs = NodeBase & {
+export type NodeLooksThinkForSecs = NodeBase & {
   kind: 'looks_thinkforsecs'
   message: InputNode
   secs: InputNode
 }
 
-export type LooksThink = NodeBase & {
+export type NodeLooksThink = NodeBase & {
   kind: 'looks_think'
   message: InputNode
 }
 
-export type LooksSwitchCostumeTo = NodeBase & {
+export type NodeLooksSwitchCostumeTo = NodeBase & {
   kind: 'looks_switchcostumeto'
   costume: InputNode
 }
 
-export type LooksCostume = NodeBase & {
+export type NodeLooksCostume = NodeBase & {
   kind: 'looks_costume'
   costume: string
 }
 
-export type LooksSwitchBackdropTo = NodeBase & {
+export type NodeLooksSwitchBackdropTo = NodeBase & {
   kind: 'looks_switchbackdropto'
   backdrop: InputNode
 }
 
-export type LooksBackdrops = NodeBase & {
+export type NodeLooksBackdrops = NodeBase & {
   kind: 'looks_backdrops'
   backdrop: ShadowBlockLooksBackdrops['fields']['BACKDROP'][0]
 }
 
-export type LooksNextCostume = NodeBase & {
+export type NodeLooksNextCostume = NodeBase & {
   kind: 'looks_nextcostume'
 }
 
-export type LooksNextBackdrop = NodeBase & {
+export type NodeLooksNextBackdrop = NodeBase & {
   kind: 'looks_nextbackdrop'
 }
 
-export type LooksChangeSizeBy = NodeBase & {
+export type NodeLooksChangeSizeBy = NodeBase & {
   kind: 'looks_changesizeby'
   change: InputNode
 }
 
-export type LooksSetSizeTo = NodeBase & {
+export type NodeLooksSetSizeTo = NodeBase & {
   kind: 'looks_setsizeto'
   size: InputNode
 }
 
-export type LooksChangeEffectBy = NodeBase & {
+export type NodeLooksChangeEffectBy = NodeBase & {
   kind: 'looks_changeeffectby'
   effect: BlockLooksChangeEffectBy['fields']['EFFECT'][0]
   change: InputNode
 }
 
-export type LooksSetEffectTo = NodeBase & {
+export type NodeLooksSetEffectTo = NodeBase & {
   kind: 'looks_seteffectto'
   effect: BlockLooksChangeEffectBy['fields']['EFFECT'][0]
   value: InputNode
 }
 
-export type LooksClearGraphicEffects = NodeBase & {
+export type NodeLooksClearGraphicEffects = NodeBase & {
   kind: 'looks_cleargraphiceffects'
 }
 
-export type LooksShow = NodeBase & {
+export type NodeLooksShow = NodeBase & {
   kind: 'looks_show'
 }
 
-export type LooksHide = NodeBase & {
+export type NodeLooksHide = NodeBase & {
   kind: 'looks_hide'
 }
 
-export type LooksGotoFrontBack = NodeBase & {
+export type NodeLooksGotoFrontBack = NodeBase & {
   kind: 'looks_gotofrontback'
   frontBack: BlockLooksGotoFrontBack['fields']['FRONT_BACK'][0]
 }
 
-export type LooksGoForwardBackwardLayers = NodeBase & {
+export type NodeLooksGoForwardBackwardLayers = NodeBase & {
   kind: 'looks_goforwardbackwardlayers'
   forwardBackward: BlockLooksGoForwardBackwardLayers['fields']['FORWARD_BACKWARD'][0]
   num: InputNode
 }
 
-export type LooksCostumeNumberName = NodeBase & {
+export type NodeLooksCostumeNumberName = NodeBase & {
   kind: 'looks_costumenumbername'
   numberName: BlockLooksCostumeNumberName['fields']['NUMBER_NAME'][0]
 }
 
-export type LooksBackdropNumberName = NodeBase & {
+export type NodeLooksBackdropNumberName = NodeBase & {
   kind: 'looks_backdropnumbername'
   numberName: BlockLooksBackdropNumberName['fields']['NUMBER_NAME'][0]
 }
 
-export type LooksSize = NodeBase<number> & {
+export type NodeLooksSize = NodeBase<number> & {
   kind: 'looks_size'
 }
 
 export type NodeLooks =
-  | LooksSayForSecs
-  | LooksSay
-  | LooksThinkForSecs
-  | LooksThink
-  | LooksSwitchCostumeTo
-  | LooksCostume
-  | LooksSwitchBackdropTo
-  | LooksBackdrops
-  | LooksNextCostume
-  | LooksNextBackdrop
-  | LooksChangeSizeBy
-  | LooksSetSizeTo
-  | LooksChangeEffectBy
-  | LooksSetEffectTo
-  | LooksClearGraphicEffects
-  | LooksShow
-  | LooksHide
-  | LooksGotoFrontBack
-  | LooksGoForwardBackwardLayers
-  | LooksCostumeNumberName
-  | LooksBackdropNumberName
-  | LooksSize
+  | NodeLooksSayForSecs
+  | NodeLooksSay
+  | NodeLooksThinkForSecs
+  | NodeLooksThink
+  | NodeLooksSwitchCostumeTo
+  | NodeLooksCostume
+  | NodeLooksSwitchBackdropTo
+  | NodeLooksBackdrops
+  | NodeLooksNextCostume
+  | NodeLooksNextBackdrop
+  | NodeLooksChangeSizeBy
+  | NodeLooksSetSizeTo
+  | NodeLooksChangeEffectBy
+  | NodeLooksSetEffectTo
+  | NodeLooksClearGraphicEffects
+  | NodeLooksShow
+  | NodeLooksHide
+  | NodeLooksGotoFrontBack
+  | NodeLooksGoForwardBackwardLayers
+  | NodeLooksCostumeNumberName
+  | NodeLooksBackdropNumberName
+  | NodeLooksSize

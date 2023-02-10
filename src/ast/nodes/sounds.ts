@@ -5,63 +5,63 @@ import {
 import { InputNode } from '../Node'
 import { NodeBase } from '../NodeBase'
 
-export type SoundPlayUntilDone = NodeBase & {
+export type NodeSoundPlayUntilDone = NodeBase & {
   kind: 'sound_playuntildone'
   soundMenu: InputNode
 }
 
-export type SoundPlay = NodeBase & {
+export type NodeSoundPlay = NodeBase & {
   kind: 'sound_play'
   soundMenu: InputNode
 }
 
-export type SoundSoundsMenu = NodeBase & {
+export type NodeSoundSoundsMenu = NodeBase & {
   kind: 'sound_sounds_menu'
   soundMenu: string
 }
 
-export type SoundStopAllSounds = NodeBase & {
+export type NodeSoundStopAllSounds = NodeBase & {
   kind: 'sound_stopallsounds'
 }
 
-export type SoundChangeEffectBy = NodeBase & {
+export type NodeSoundChangeEffectBy = NodeBase & {
   kind: 'sound_changeeffectby'
   value: InputNode
   effect: BlockSoundChangeEffectBy['fields']['EFFECT'][0]
 }
 
-export type SoundSetEffectTo = NodeBase & {
+export type NodeSoundSetEffectTo = NodeBase & {
   kind: 'sound_seteffectto'
   value: InputNode
   effect: BlockSoundSetEffectTo['fields']['EFFECT'][0]
 }
 
-export type SoundClearEffects = NodeBase & {
+export type NodeSoundClearEffects = NodeBase & {
   kind: 'sound_cleareffects'
 }
 
-export type SoundChangeVolumeBy = NodeBase & {
+export type NodeSoundChangeVolumeBy = NodeBase & {
   kind: 'sound_changevolumeby'
   volume: InputNode
 }
 
-export type SoundSetVolumeTo = NodeBase & {
+export type NodeSoundSetVolumeTo = NodeBase & {
   kind: 'sound_setvolumeto'
   volume: InputNode
 }
 
-export type SoundVolume = NodeBase<number> & {
+export type NodeSoundVolume = NodeBase<number> & {
   kind: 'sound_volume'
 }
 
 export type NodeSound =
-  | SoundPlayUntilDone
-  | SoundPlay
-  | SoundSoundsMenu
-  | SoundStopAllSounds
-  | SoundChangeEffectBy
-  | SoundSetEffectTo
-  | SoundClearEffects
-  | SoundChangeVolumeBy
-  | SoundSetVolumeTo
-  | SoundVolume
+  | NodeSoundPlayUntilDone
+  | NodeSoundPlay
+  | NodeSoundSoundsMenu
+  | NodeSoundStopAllSounds
+  | NodeSoundChangeEffectBy
+  | NodeSoundSetEffectTo
+  | NodeSoundClearEffects
+  | NodeSoundChangeVolumeBy
+  | NodeSoundSetVolumeTo
+  | NodeSoundVolume

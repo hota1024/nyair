@@ -2,62 +2,62 @@ import { ShadowBlockPenMenuColorParam } from '@/sb3/blocks/pen'
 import { InputNode } from '../Node'
 import { NodeBase } from '../NodeBase'
 
-export type PenClear = NodeBase & {
+export type NodePenClear = NodeBase & {
   kind: 'pen_clear'
 }
 
-export type PenStamp = NodeBase & {
+export type NodePenStamp = NodeBase & {
   kind: 'pen_stamp'
 }
 
-export type PenPenDown = NodeBase & {
+export type NodePenPenDown = NodeBase & {
   kind: 'pen_penDown'
 }
 
-export type PenPenUp = NodeBase & {
+export type NodePenPenUp = NodeBase & {
   kind: 'pen_penUp'
 }
 
-export type PenSetPenColorToColor = NodeBase & {
+export type NodePenSetPenColorToColor = NodeBase & {
   kind: 'pen_setPenColorToColor'
   color: InputNode
 }
 
-export type PenChangePenColorParamBy = NodeBase & {
+export type NodePenChangePenColorParamBy = NodeBase & {
   kind: 'pen_changePenColorParamBy'
   colorParam: InputNode
   value: InputNode
 }
 
-export type PenMenuColorParam = NodeBase & {
+export type NodePenMenuColorParam = NodeBase & {
   kind: 'pen_menu_colorParam'
   colorParam: ShadowBlockPenMenuColorParam['fields']['colorParam'][0]
 }
 
-export type PenSetPenColorParamTo = NodeBase & {
+export type NodePenSetPenColorParamTo = NodeBase & {
   kind: 'pen_setPenColorParamTo'
   colorParam: InputNode
   value: InputNode
 }
 
-export type PenChangePenSizeBy = NodeBase & {
+export type NodePenChangePenSizeBy = NodeBase & {
   kind: 'pen_changePenSizeBy'
   size: InputNode
 }
 
-export type PenSetPenSizeTo = NodeBase & {
+export type NodePenSetPenSizeTo = NodeBase & {
   kind: 'pen_setPenSizeTo'
   size: InputNode
 }
 
 export type NodePen =
-  | PenClear
-  | PenStamp
-  | PenPenDown
-  | PenPenUp
-  | PenSetPenColorToColor
-  | PenChangePenColorParamBy
-  | PenMenuColorParam
-  | PenSetPenColorParamTo
-  | PenChangePenSizeBy
-  | PenSetPenSizeTo
+  | NodePenClear
+  | NodePenStamp
+  | NodePenPenDown
+  | NodePenPenUp
+  | NodePenSetPenColorToColor
+  | NodePenChangePenColorParamBy
+  | NodePenMenuColorParam
+  | NodePenSetPenColorParamTo
+  | NodePenChangePenSizeBy
+  | NodePenSetPenSizeTo

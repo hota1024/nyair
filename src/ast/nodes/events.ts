@@ -1,57 +1,57 @@
 import { NodeBase } from '../NodeBase'
 import { InputNode, Node } from '../Node'
 
-export type EventWhenFlagClicked = NodeBase & {
+export type NodeEventWhenFlagClicked = NodeBase & {
   kind: 'event_whenflagclicked'
   body: Node[]
 }
 
-export type EventWhenKeyPressed = NodeBase & {
+export type NodeEventWhenKeyPressed = NodeBase & {
   kind: 'event_whenkeypressed'
   key: string
   body: Node[]
 }
 
-export type EventWhenStageClicked = NodeBase & {
+export type NodeEventWhenStageClicked = NodeBase & {
   kind: 'event_whenstageclicked'
   body: Node[]
 }
 
-export type EventWhenBackdropSwitchesTo = NodeBase & {
+export type NodeEventWhenBackdropSwitchesTo = NodeBase & {
   kind: 'event_whenbackdropswitchesto'
   backdrop: string
   body: Node[]
 }
 
-export type EventWhenGreaterThan = NodeBase & {
+export type NodeEventWhenGreaterThan = NodeBase & {
   kind: 'event_whengreaterthan'
   target: 'LOUDNESS' | 'TIMER'
   value: InputNode
   body: Node[]
 }
 
-export type EventWhenBroadcastReceived = NodeBase & {
+export type NodeEventWhenBroadcastReceived = NodeBase & {
   kind: 'event_whenbroadcastreceived'
   broadcast: string
   body: Node[]
 }
 
-export type EventBroadcast = NodeBase & {
+export type NodeEventBroadcast = NodeBase & {
   kind: 'event_broadcast'
   broadcast: InputNode
 }
 
-export type EventBroadcastAndWait = NodeBase & {
+export type NodeEventBroadcastAndWait = NodeBase & {
   kind: 'event_broadcastandwait'
   broadcast: InputNode
 }
 
 export type NodeEvent =
-  | EventWhenFlagClicked
-  | EventWhenKeyPressed
-  | EventWhenStageClicked
-  | EventWhenBackdropSwitchesTo
-  | EventWhenGreaterThan
-  | EventWhenBroadcastReceived
-  | EventBroadcast
-  | EventBroadcastAndWait
+  | NodeEventWhenFlagClicked
+  | NodeEventWhenKeyPressed
+  | NodeEventWhenStageClicked
+  | NodeEventWhenBackdropSwitchesTo
+  | NodeEventWhenGreaterThan
+  | NodeEventWhenBroadcastReceived
+  | NodeEventBroadcast
+  | NodeEventBroadcastAndWait

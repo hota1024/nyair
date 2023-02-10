@@ -5,80 +5,80 @@ import {
 import { InputNode, InputNodeOf, Node } from '../Node'
 import { NodeBase } from '../NodeBase'
 
-export type ControlWait = NodeBase & {
+export type NodeControlWait = NodeBase & {
   kind: 'control_wait'
   duration: InputNode
 }
 
-export type ControlRepeat = NodeBase & {
+export type NodeControlRepeat = NodeBase & {
   kind: 'control_repeat'
   times: InputNode
   substack: Node[]
 }
 
-export type ControlForever = NodeBase & {
+export type NodeControlForever = NodeBase & {
   kind: 'control_forever'
   substack: Node[]
 }
 
-export type ControlIf = NodeBase & {
+export type NodeControlIf = NodeBase & {
   kind: 'control_if'
   condition: InputNodeOf<boolean>
   substack: Node[]
 }
 
-export type ControlIfElse = NodeBase & {
+export type NodeControlIfElse = NodeBase & {
   kind: 'control_if_else'
   condition: InputNodeOf<boolean>
   substack1: Node[]
   substack2: Node[]
 }
 
-export type ControlWaitUntil = NodeBase & {
+export type NodeControlWaitUntil = NodeBase & {
   kind: 'control_wait_until'
   condition: InputNodeOf<boolean>
 }
 
-export type ControlRepeatUntil = NodeBase & {
+export type NodeControlRepeatUntil = NodeBase & {
   kind: 'control_repeat_until'
   condition: InputNodeOf<boolean>
   substack: Node[]
 }
 
-export type ControlStop = NodeBase & {
+export type NodeControlStop = NodeBase & {
   kind: 'control_stop'
   stopOption: BlockControlStop['fields']['STOP_OPTION'][0]
 }
 
-export type ControlStartAsClone = NodeBase & {
+export type NodeControlStartAsClone = NodeBase & {
   kind: 'control_start_as_clone'
   body: Node[]
 }
 
-export type ControlCreateCloneOf = NodeBase & {
+export type NodeControlCreateCloneOf = NodeBase & {
   kind: 'control_create_clone_of'
   cloneOption: InputNode
 }
 
-export type ControlCreateCloneOfMenu = NodeBase & {
+export type NodeControlCreateCloneOfMenu = NodeBase & {
   kind: 'control_create_clone_of_menu'
   cloneOption: ShadowBlockControlCreateCloneOfMenu['fields']['CLONE_OPTION'][0]
 }
 
-export type ControlDeleteThisClone = NodeBase & {
+export type NodeControlDeleteThisClone = NodeBase & {
   kind: 'control_delete_this_clone'
 }
 
 export type NodeControl =
-  | ControlWait
-  | ControlRepeat
-  | ControlForever
-  | ControlIf
-  | ControlIfElse
-  | ControlWaitUntil
-  | ControlRepeatUntil
-  | ControlStop
-  | ControlStartAsClone
-  | ControlCreateCloneOf
-  | ControlCreateCloneOfMenu
-  | ControlDeleteThisClone
+  | NodeControlWait
+  | NodeControlRepeat
+  | NodeControlForever
+  | NodeControlIf
+  | NodeControlIfElse
+  | NodeControlWaitUntil
+  | NodeControlRepeatUntil
+  | NodeControlStop
+  | NodeControlStartAsClone
+  | NodeControlCreateCloneOf
+  | NodeControlCreateCloneOfMenu
+  | NodeControlDeleteThisClone
