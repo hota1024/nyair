@@ -1,149 +1,134 @@
-import { InputNode, InputNodeOf, Node, NodeKind, NodeOf } from '@/ast/Node'
-import { NOMHasParent } from './NOMHasParent'
+import { Node, NodeKind, NodeOf } from '@/ast/Node'
+import { Model, ModelizeFields } from './interfaces'
 import { NOMList } from './NOMList'
-import { NOMQuery } from './NOMQuery'
 
-export class NOM<N extends Node = Node>
-  extends NOMHasParent
-  implements NOMQuery {
-  private parentList?: NOMList
-  protected children: (NOM | NOMList)[] = []
+class NomBase<N extends Node, F extends ModelizeFields<N> = ModelizeFields<N>>
+  implements Model<N> {
+  readonly kind: N['kind']
 
-  constructor(public readonly kind: N['kind']) {
-    super()
+  private fieldKeys: (keyof F)[] = []
+  private parentModel: Model | null = null
+
+  constructor(kind: N['kind']) {
+    this.kind = kind
   }
 
-  setParentList(parentList: NOMList): void {
-    this.parentList = parentList
+  set(fields: F): void {
+    const { self } = this
+
+    this.fieldKeys = Object.keys(fields) as (keyof F)[]
+
+    this.forEachFields((name) => {
+      const field = fields[name]
+      self[name] = field
+
+      if (field instanceof NomBase) {
+        field.setParent(this)
+      } else if (field instanceof NOMList) {
+        field.setChildrenParent(this)
+      }
+    })
   }
 
-  expectParentList(): NOMList {
-    if (!this.parentList) {
-      throw new Error('Parent list not set')
+  replaceFieldModel(oldField: Model, newField: Model): void {
+    newField.setParent(this)
+
+    this.forEachFields((name, field) => {
+      if (field instanceof NomBase && field === oldField) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this.self[name] = newField as any
+      } else if (field instanceof NOMList) {
+        field.replaceModel(oldField, newField)
+      }
+    })
+  }
+
+  replaceWith(model: Model): void {
+    const parent = this.parent()
+
+    if (!parent) {
+      throw new Error('NomBase#replaceWith is avaiable only if it has a parent')
     }
-    return this.parentList
+
+    parent.replaceFieldModel(this, model)
   }
 
   toNode(): N {
-    throw new Error('Not implemented')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const node: any = {
+      kind: this.kind,
+    }
+
+    this.forEachFields((name, field) => {
+      if (field instanceof NomBase) {
+        node[name] = field.toNode()
+      } else if (field instanceof NOMList) {
+        node[name] = field.toNodeArray()
+      } else {
+        node[name] = field
+      }
+    })
+
+    return node as N
+  }
+
+  setParent(model: Model): void {
+    this.parentModel = model
+  }
+
+  parent(): Model | null {
+    return this.parentModel
+  }
+
+  is<K extends NodeKind>(kind: K): this is NOM<NodeOf<K>> {
+    return this.kind === kind
   }
 
   listByKind<K extends NodeKind>(kind: K): NOM<NodeOf<K>>[] {
-    const list: NOM<NodeOf<K>>[] = []
+    const result: NOM<NodeOf<K>>[] = []
 
-    for (const item of this.children) {
-      if (item instanceof NOMList) {
-        list.push(...item.listByKind(kind))
-      } else if (item.kind === kind) {
-        list.push(item as NOM<NodeOf<K>>)
+    this.forEachFields((_, field) => {
+      if (field instanceof NomBase && field.is(kind)) {
+        result.push(field)
+      } else if (field instanceof NOMList) {
+        result.push(...(field.listByKind(kind) as NOM<NodeOf<K>>[]))
       }
-    }
+    })
 
-    return list
+    return result
+  }
+
+  private forEachFields(callback: (name: keyof F, field: F[keyof F]) => void) {
+    this.fieldKeys.forEach((key) => {
+      callback(key, this.self[key])
+    })
+  }
+
+  private get self(): F {
+    return (this as unknown) as F
   }
 }
 
-export type InputNOM<T extends InputNode = InputNode> = NOM<T>
+export type NOM<N extends Node = Node> = NomBase<N> & ModelizeFields<N>
+export type NOMConstructor<N extends Node = Node> = new (
+  fields: ModelizeFields<N>
+) => NOM<N>
 
-// Decorators
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-type NomClassType = Function & {
-  kind: NodeKind
-  fieldKeys: string[]
-}
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const NomClass = <K extends NodeKind, N = NodeOf<K>>(
-  kind: K,
-  fieldKeys: (keyof N)[]
-) => {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  return (target: Function): void => {
-    ;((target as unknown) as NomClassType).kind = kind
-    ;((target as unknown) as NomClassType).fieldKeys = fieldKeys as string[]
-  }
-}
-
-// export const NomField = <T extends NOM>(target: T, key: keyof T): void => {
-//   ;(target['constructor'] as NomClass).fieldKeys.push(key as string)
-// }
-
-type NomClassBase<N extends Node, F = Omit<N, 'kind'>> = {
-  [K in keyof F]: F[K] extends InputNodeOf<infer T>
-    ? NOM<InputNodeOf<T>>
-    : F[K] extends InputNode
-    ? InputNOM
-    : F[K] extends Node
-    ? NOM<F[K]>
-    : F[K] extends Node[]
-    ? NOMList
-    : F[K]
-}
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const createNomBase = <
+export const createNomClass = <
   K extends NodeKind,
   N extends Node = NodeOf<K>,
-  B = NomClassBase<N>
+  F extends ModelizeFields<N> = ModelizeFields<N>
 >(
   kind: K
-) => {
-  return (class extends NOM<N> {
-    private fieldKeys: (keyof N)[] = []
-
-    constructor(data: B) {
+): NOMConstructor<N> => {
+  const c = (class extends NomBase<N> {
+    constructor(fields: F) {
       super(kind)
-      this.set(data)
+      this.set(fields)
     }
+  } as unknown) as NOMConstructor<N>
 
-    set(data: B): void {
-      Object.assign(this, data)
-      this.fieldKeys = Object.keys(
-        data as Record<string, unknown>
-      ) as (keyof N)[]
+  Object.defineProperty(c, 'name', { value: kind })
 
-      for (const value of Object.values(data as Record<string, unknown>)) {
-        if (value instanceof NOM || value instanceof NOMList) {
-          value.setParent(this)
-          this.children.push(value)
-        }
-      }
-    }
-
-    replaceWith(model: NOM, newModel: NOM): void {
-      for (const key of this.fieldKeys) {
-        const value = this[key as keyof typeof this]
-
-        if (value === model) {
-          this[
-            key as keyof typeof this
-          ] = newModel as typeof this[keyof typeof this]
-        }
-      }
-
-      this.children = this.children.map((m) => (m === model ? newModel : m))
-    }
-
-    toNode(): N {
-      const node = {
-        kind: this.kind,
-      } as N
-      const self = (this as unknown) as B
-
-      for (const key of this.fieldKeys) {
-        const value = self[key as keyof B]
-
-        if (value instanceof NOM) {
-          node[key] = value.toNode()
-        } else if (value instanceof NOMList) {
-          node[key] = (value.toNodeArray() as unknown) as N[keyof N]
-        } else {
-          node[key] = (value as unknown) as N[keyof N]
-        }
-      }
-
-      return node
-    }
-  } as unknown) as { new (data: B): NOM<N> & B }
+  return c
 }
