@@ -45,6 +45,11 @@ export type NodeDataDeleteOfList = NodeBase & {
   list: string
 }
 
+export type NodeDataDeleteAllOfList = NodeBase & {
+  kind: 'data_deletealloflist'
+  list: string
+}
+
 export type NodeDataInsertAtList = NodeBase & {
   kind: 'data_insertatlist'
   index: InputNode
@@ -101,6 +106,7 @@ export type NodeData =
   | NodeDataList
   | NodeDataAddToList
   | NodeDataDeleteOfList
+  | NodeDataDeleteAllOfList
   | NodeDataInsertAtList
   | NodeDataReplaceItemOfList
   | NodeDataItemOfList

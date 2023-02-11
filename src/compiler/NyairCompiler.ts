@@ -285,6 +285,12 @@ export class BlockCompiler {
         opcode: node.kind,
       })
       this.addBlockChildren(entry, node.body)
+    } else if (node.kind === 'event_whenthisspritecilcked') {
+      entry = this.addBlock({
+        ...this.hatBase(),
+        opcode: node.kind,
+      })
+      this.addBlockChildren(entry, node.body)
     } else if (node.kind === 'event_whenbackdropswitchesto') {
       entry = this.addBlock({
         ...this.hatBase(),
@@ -561,6 +567,13 @@ export class BlockCompiler {
           LIST: [node.list, this.listTable.get(node.list)],
         },
       }))
+    } else if (node.kind === 'data_deletealloflist') {
+      entry = this.addBlock({
+        opcode: node.kind,
+        fields: {
+          LIST: [node.list, this.listTable.get(node.list)],
+        },
+      })
     } else if (node.kind === 'data_insertatlist') {
       entry = this.addBlockLazy(({ input }) => ({
         opcode: node.kind,

@@ -73,6 +73,16 @@ export type BlockDataAddToList = BlockBase & {
 
 export type BlockDataDeleteOfList = BlockBase & {
   opcode: 'data_deleteoflist'
+  fields: {
+    /**
+     * `[{LIST NAME}, {LIST UID}]`
+     */
+    LIST: [string, UID]
+  }
+}
+
+export type BlockDataDeleteAllOfList = BlockBase & {
+  opcode: 'data_deletealloflist'
   inputs: {
     INDEX: Input
   }

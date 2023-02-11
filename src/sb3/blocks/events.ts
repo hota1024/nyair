@@ -30,6 +30,11 @@ export type BlockEventWhenStageClicked = BlockBase & {
   parent: null
 }
 
+export type BlockWhenThisSpriteClicked = BlockBase & {
+  opcode: 'event_whenthisspriteclicked'
+  parent: null
+}
+
 export type BlockEventWhenBackdropSwitchesTo = BlockBase & {
   opcode: 'event_whenbackdropswitchesto'
   parent: null
@@ -86,6 +91,7 @@ export type BlockEvent =
   | BlockEventWhenFlagClicked
   | BlockEventWhenKeyPressed
   | BlockEventWhenStageClicked
+  | BlockWhenThisSpriteClicked
   | BlockEventWhenBackdropSwitchesTo
   | BlockEventWhenGreaterThan
   | BlockEventWhenBroadcastReceived

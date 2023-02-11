@@ -17,6 +17,11 @@ export type NodeEventWhenStageClicked = NodeBase & {
   body: Node[]
 }
 
+export type NodeEventWhenThisSpriteClicked = NodeBase & {
+  kind: 'event_whenthisspriteclicked'
+  body: Node[]
+}
+
 export type NodeEventWhenBackdropSwitchesTo = NodeBase & {
   kind: 'event_whenbackdropswitchesto'
   backdrop: string
@@ -50,6 +55,7 @@ export type NodeEvent =
   | NodeEventWhenFlagClicked
   | NodeEventWhenKeyPressed
   | NodeEventWhenStageClicked
+  | NodeEventWhenThisSpriteClicked
   | NodeEventWhenBackdropSwitchesTo
   | NodeEventWhenGreaterThan
   | NodeEventWhenBroadcastReceived
