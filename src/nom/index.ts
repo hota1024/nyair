@@ -67,32 +67,32 @@ const NODE_KIND_FIELDS_MAP: {
   }),
   control_repeat: (node) => ({
     times: createNomFrom(node.times),
-    substack: createNomArrayFrom(node.substack),
+    substack: createNomListFrom(node.substack),
   }),
   control_forever: (node) => ({
-    substack: createNomArrayFrom(node.substack),
+    substack: createNomListFrom(node.substack),
   }),
   control_if: (node) => ({
     condition: createNomFrom(node.condition),
-    substack: createNomArrayFrom(node.substack),
+    substack: createNomListFrom(node.substack),
   }),
   control_if_else: (node) => ({
     condition: createNomFrom(node.condition),
-    substack1: createNomArrayFrom(node.substack1),
-    substack2: createNomArrayFrom(node.substack2),
+    substack1: createNomListFrom(node.substack1),
+    substack2: createNomListFrom(node.substack2),
   }),
   control_wait_until: (node) => ({
     condition: createNomFrom(node.condition),
   }),
   control_repeat_until: (node) => ({
     condition: createNomFrom(node.condition),
-    substack: createNomArrayFrom(node.substack),
+    substack: createNomListFrom(node.substack),
   }),
   control_stop: (node) => ({
     stopOption: node.stopOption,
   }),
   control_start_as_clone: (node) => ({
-    body: createNomArrayFrom(node.body),
+    body: createNomListFrom(node.body),
   }),
   control_create_clone_of: (node) => ({
     cloneOption: createNomFrom(node.cloneOption),
@@ -164,25 +164,25 @@ const NODE_KIND_FIELDS_MAP: {
     list: node.list,
   }),
   event_whenflagclicked: (node) => ({
-    body: createNomArrayFrom(node.body),
+    body: createNomListFrom(node.body),
   }),
   event_whenkeypressed: (node) => ({
     key: node.key,
-    body: createNomArrayFrom(node.body),
+    body: createNomListFrom(node.body),
   }),
   event_whenstageclicked: (node) => ({
-    body: createNomArrayFrom(node.body),
+    body: createNomListFrom(node.body),
   }),
   event_whenthisspriteclicked: (node) => ({
-    body: createNomArrayFrom(node.body),
+    body: createNomListFrom(node.body),
   }),
   event_whenbackdropswitchesto: (node) => ({
     backdrop: node.backdrop,
-    body: createNomArrayFrom(node.body),
+    body: createNomListFrom(node.body),
   }),
   event_whenbroadcastreceived: (node) => ({
     broadcast: node.broadcast,
-    body: createNomArrayFrom(node.body),
+    body: createNomListFrom(node.body),
   }),
   event_broadcast: (node) => ({
     broadcast: createNomFrom(node.broadcast),
@@ -193,7 +193,7 @@ const NODE_KIND_FIELDS_MAP: {
   event_whengreaterthan: (node) => ({
     target: node.target,
     value: createNomFrom(node.value),
-    body: createNomArrayFrom(node.body),
+    body: createNomListFrom(node.body),
   }),
   $literal_number: (node) => ({
     value: node.value,
@@ -431,22 +431,35 @@ const NODE_KIND_FIELDS_MAP: {
   }),
   procedures_definition: (node) => ({
     customBlock: createNomFrom(node.customBlock),
-    body: createNomArrayFrom(node.body),
+    body: createNomListFrom(node.body),
   }),
   procedures_prototype: (node) => ({
     procCode: node.procCode,
-    arguments: createNomArrayFrom(node.arguments),
+    arguments: createNomListFrom(node.arguments),
     argumentDefaults: node.argumentDefaults,
     warp: node.warp,
   }),
   procedures_call: (node) => ({
     procCode: node.procCode,
-    arguments: createNomArrayFrom(node.arguments),
+    arguments: createNomListFrom(node.arguments),
   }),
   argument_reporter_boolean: (node) => ({
     name: node.name,
   }),
   argument_reporter_string_number: (node) => ({
+    name: node.name,
+  }),
+  $proc_def: (node) => ({
+    name: node.name,
+    schema: node.schema,
+    warp: node.warp,
+    body: createNomListFrom(node.body),
+  }),
+  $proc_call: (node) => ({
+    name: node.name,
+    args: createNomListFrom(node.args),
+  }),
+  $proc_arg: (node) => ({
     name: node.name,
   }),
   sensing_touchingobject: (node) => ({
@@ -538,6 +551,6 @@ export const createNomFrom = <N extends Node>(node: N): NOM<N> => {
   return createNom(kind, { ...rest, ...fields } as any) as NOM<N>
 }
 
-export const createNomArrayFrom = (nodes: Node[]): NOMList => {
+export const createNomListFrom = (nodes: Node[]): NOMList => {
   return createNomList(nodes.map((node) => createNomFrom(node)))
 }

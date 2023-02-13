@@ -198,6 +198,7 @@ export type BlockData =
   | BlockDataHideVariable
   | BlockDataAddToList
   | BlockDataDeleteOfList
+  | BlockDataDeleteAllOfList
   | BlockDataInsertAtList
   | BlockDataReplaceItemOfList
   | BlockDataItemOfList

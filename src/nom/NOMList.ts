@@ -16,28 +16,32 @@ export class NOMList extends HasNomChildren implements ModelList {
     return this.nodes[index] as NOM<Node>
   }
 
-  remove(index: number): void {
+  removeIndex(index: number): void {
     this.nodes.splice(index, 1)
+  }
+
+  remove(model: Model): void {
+    this.nodes = this.nodes.filter((m) => m !== model)
   }
 
   clear(): void {
     this.nodes = []
   }
 
-  push(model: NOM): void {
+  push(model: Model): void {
     this.nodes.push(model)
   }
 
-  insertAt(index: number, model: NOM): void {
+  insertAt(index: number, model: Model): void {
     this.nodes.splice(index, 0, model)
   }
 
-  insertBefore(legend: NOM, model: NOM): void {
+  insertBefore(legend: Model, model: Model): void {
     const index = this.nodes.indexOf(legend)
     this.nodes.splice(index, 0, model)
   }
 
-  insertAfter(legend: NOM, model: NOM): void {
+  insertAfter(legend: Model, model: Model): void {
     const index = this.nodes.indexOf(legend)
     this.nodes.splice(index + 1, 0, model)
   }

@@ -33,9 +33,45 @@ export type NodeProceduresCall = NodeBase & {
   arguments: InputNode[]
 }
 
+export type ProcSchema =
+  | {
+      type: 'label'
+      text: string
+    }
+  | {
+      type: 'string_number'
+      name: string
+    }
+  | {
+      type: 'boolean'
+      name: string
+    }
+
+export type Node$ProcDef = NodeBase & {
+  kind: '$proc_def'
+  name: string
+  schema: ProcSchema[]
+  warp: boolean
+  body: Node[]
+}
+
+export type Node$ProcCall = NodeBase & {
+  kind: '$proc_call'
+  name: string
+  args: InputNode[]
+}
+
+export type Node$ProcInput = NodeBase & {
+  kind: '$proc_arg'
+  name: string
+}
+
 export type NodeProcedures =
   | NodeProceduresDefinition
   | NodeProceduresPrototype
   | ArgumentReporterStringNumber
   | ArgumentReporterBoolean
   | NodeProceduresCall
+  | Node$ProcDef
+  | Node$ProcCall
+  | Node$ProcInput

@@ -1,9 +1,11 @@
 import {
   List,
-  Nyair,
+  NyairJSON,
   Stage,
   Variable,
   Target as NyairTarget,
+  Sprite,
+  Nyair,
 } from '@/ast/Nayir'
 import { InputNode, Node } from '@/ast/Node'
 import { Block, Blocks } from '@/sb3/Blocks'
@@ -14,6 +16,7 @@ import { isScratchValue } from '@/sb3/ScratchValue'
 import { Target } from '@/sb3/Target'
 import { UID } from '@/sb3/UID'
 import { Variables } from '@/sb3/Variables'
+import { Transformer } from '@/pipeline/Transformer'
 import { createUID } from '@/uid'
 import { Compiler } from './Compiler'
 
@@ -33,6 +36,12 @@ class SymbolTable {
 
     return uid
   }
+
+  merge(other: SymbolTable) {
+    other.table.forEach((uid, name) => {
+      this.add(name, uid)
+    })
+  }
 }
 
 /**
@@ -40,13 +49,26 @@ class SymbolTable {
  */
 export class NyairCompiler implements Compiler {
   private readonly broadcastTable = new SymbolTable()
+  private readonly globalVariableTable = new SymbolTable()
+  private readonly globalListTable = new SymbolTable()
 
-  compile(source: Nyair): ProjectJson {
+  constructor(public readonly pipeline: Transformer[] = []) {}
+
+  compile(source: NyairJSON | Nyair): ProjectJson {
+    const nyair = source instanceof Nyair ? source : new Nyair(source)
+
+    this.pipeline.forEach((transformer) => {
+      transformer.transform(nyair)
+    })
+
+    source = nyair.toJSON()
+
     this.importBroadcastsFromTargets([source.stage, ...source.sprites])
     const stage = this.compileStage(source.stage)
+    const sprites = source.sprites.map((sprite) => this.compileSprite(sprite))
 
     const json: Partial<ProjectJson> = {
-      targets: [stage],
+      targets: [stage, ...sprites],
       monitors: [],
       extensions: source.extensions,
       meta: {
@@ -87,6 +109,8 @@ export class NyairCompiler implements Compiler {
   private compileStage(stage: Stage): Target {
     const { variables, variableTable } = this.compileVariables(stage.variables)
     const { lists, listTable } = this.compileLists(stage.lists)
+    this.globalVariableTable.merge(variableTable)
+    this.globalListTable.merge(listTable)
     const blockCompiler = new BlockCompiler(
       variableTable,
       listTable,
@@ -110,6 +134,44 @@ export class NyairCompiler implements Compiler {
       videoState: stage.videoState,
       videoTransparency: stage.videoTransparency,
       textToSpeechLanguage: stage.textToSpeechLanguage,
+    }
+
+    return target
+  }
+
+  private compileSprite(sprite: Sprite): Target {
+    const { variables, variableTable } = this.compileVariables(sprite.variables)
+    const { lists, listTable } = this.compileLists(sprite.lists)
+
+    variableTable.merge(this.globalVariableTable)
+    listTable.merge(this.globalListTable)
+
+    const blockCompiler = new BlockCompiler(
+      variableTable,
+      listTable,
+      this.broadcastTable
+    )
+
+    const target: Target = {
+      isStage: false,
+      name: sprite.name,
+      variables,
+      lists,
+      costumes: sprite.costumes,
+      broadcasts: {},
+      sounds: [],
+      blocks: blockCompiler.compile(sprite.blocks),
+      comments: {},
+      volume: sprite.volume,
+      layerOrder: sprite.layerOrder,
+      currentCostume: sprite.currentCostume,
+      visible: sprite.visible,
+      x: sprite.x,
+      y: sprite.y,
+      size: sprite.size,
+      direction: sprite.direction,
+      draggable: sprite.draggable,
+      rotationStyle: sprite.rotationStyle,
     }
 
     return target
@@ -285,7 +347,7 @@ export class BlockCompiler {
         opcode: node.kind,
       })
       this.addBlockChildren(entry, node.body)
-    } else if (node.kind === 'event_whenthisspritecilcked') {
+    } else if (node.kind === 'event_whenthisspriteclicked') {
       entry = this.addBlock({
         ...this.hatBase(),
         opcode: node.kind,

@@ -31,7 +31,14 @@ export interface ModelList extends HasModelQuery {
    *
    * @param index index.
    */
-  remove(index: number): void
+  removeIndex(index: number): void
+
+  /**
+   * remove a model.
+   *
+   * @param model model.
+   */
+  remove(model: Model): void
 
   /**
    * remove all models.

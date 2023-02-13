@@ -1,3 +1,5 @@
+import { createNomListFrom } from '@/nom'
+import { NOMList } from '@/nom/NOMList'
 import { Costume } from '@/sb3/Costume'
 import { RotationStyle } from '@/sb3/RotationStyle'
 import { ScratchValue } from '@/sb3/ScratchValue'
@@ -32,6 +34,7 @@ export type Stage = Target & {
 }
 
 export type Sprite = Target & {
+  name: string
   visible: true
   x: number
   y: number
@@ -41,9 +44,37 @@ export type Sprite = Target & {
   rotationStyle: RotationStyle
 }
 
-export type Nyair = {
+export type NyairJSON = {
   version: '0'
   stage: Stage
   sprites: Sprite[]
   extensions: string[]
+}
+
+export class Nyair {
+  constructor(public readonly json: NyairJSON) {}
+
+  getStage(): Stage {
+    return this.json.stage
+  }
+
+  getSprites(): Sprite[] {
+    return this.json.sprites
+  }
+
+  getTargets(): Target[] {
+    return [this.getStage(), ...this.getSprites()]
+  }
+
+  getTargetNom(target: Target): NOMList {
+    return createNomListFrom(target.blocks)
+  }
+
+  setTargetBlocksByNom(target: Target, nomList: NOMList): void {
+    target.blocks = nomList.toNodeArray()
+  }
+
+  toJSON(): NyairJSON {
+    return this.json
+  }
 }
