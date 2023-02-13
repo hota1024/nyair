@@ -1,6 +1,7 @@
-import ts from '@wessberg/rollup-plugin-ts'
-import pkg from './package.json'
+import ts from 'rollup-plugin-ts'
+import pkg from './package.json' assert { type: "json" }
 import eslint from '@rollup/plugin-eslint'
+import progress from 'rollup-plugin-progress'
 import { builtinModules } from 'module'
 
 export default {
@@ -17,7 +18,11 @@ export default {
       sourcemap: true,
     },
   ],
-  plugins: [eslint(), ts()],
+  plugins: [
+    progress(),
+    eslint(),
+    ts(),
+  ],
   external: [
     ...builtinModules,
     ...(pkg.dependencies == null ? [] : Object.keys(pkg.dependencies)),
