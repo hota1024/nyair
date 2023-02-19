@@ -1,6 +1,6 @@
 {
   "name": "nyair",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "description": "The Intermediate Representation of Scratch3.0's project.json",
   "repository": {
