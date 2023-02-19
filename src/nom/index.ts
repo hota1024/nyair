@@ -9,6 +9,11 @@ import { Model, ModelizeFields } from './interfaces'
 import { createNomClass, NOM, NOMConstructor } from './NOM'
 import { NOMList } from './NOMList'
 
+export * from './interfaces'
+export * from './NOM'
+export * from './NOMList'
+export * from './NomQuery'
+
 const KIND_NOM_MAP = new Map<NodeKind, NOMConstructor>()
 
 export const createNom = <K extends NodeKind, N extends NodeOf<K> = NodeOf<K>>(
