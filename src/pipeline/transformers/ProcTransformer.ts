@@ -1,6 +1,6 @@
 import { Nyair } from '@/ast/Nayir'
 import { NodeProceduresPrototype } from '@/ast/nodes/procedures'
-import { createNom } from '@/nom'
+import { createNom, ModelList, NOM } from '@/nom'
 import { NOMList } from '@/nom/NOMList'
 import { ScratchValue } from '@/sb3/ScratchValue'
 import { BaseTransformer } from '../Transformer'
@@ -97,31 +97,33 @@ export class ProcTransformer extends BaseTransformer {
         argumentDefaults: argDefaults,
         warp: def.warp,
       })
-      const body = def.body
+      const body = def.body as NOMList
 
       const definition = createNom('procedures_definition', {
         customBlock,
         body,
       })
-      body.setChildrenParent(definition)
+      body.setChildrenParent(definition as NOM)
 
-      body.listByKind('$proc_arg').forEach((arg) => {
-        const argData = proc.args.find((argData) => argData.name === arg.name)
+      body
+        .queryFnAll((node) => node.kind === '$proc_arg')
+        .forEach((arg) => {
+          const argData = proc.args.find((argData) => argData.name === arg.name)
 
-        if (!argData) {
-          throw new Error(`no argument definition for ${arg.name}`)
-        }
+          if (!argData) {
+            throw new Error(`no argument definition for ${arg.name}`)
+          }
 
-        if (argData.type === 'string_number') {
-          arg.replaceWith(
-            createNom('argument_reporter_string_number', { name: arg.name })
-          )
-        } else if (argData.type === 'boolean') {
-          arg.replaceWith(
-            createNom('argument_reporter_boolean', { name: arg.name })
-          )
-        }
-      })
+          if (argData.type === 'string_number') {
+            arg.replaceWith(
+              createNom('argument_reporter_string_number', { name: arg.name })
+            )
+          } else if (argData.type === 'boolean') {
+            arg.replaceWith(
+              createNom('argument_reporter_boolean', { name: arg.name })
+            )
+          }
+        })
 
       data.push(proc)
       nom.insertBefore(def, definition)
