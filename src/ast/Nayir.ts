@@ -1,8 +1,10 @@
 import { createNomListFrom } from '@/nom'
 import { NOMList } from '@/nom/NOMList'
+import { Broadcasts } from '@/sb3/Broadcasts'
 import { Costume } from '@/sb3/Costume'
 import { RotationStyle } from '@/sb3/RotationStyle'
 import { ScratchValue } from '@/sb3/ScratchValue'
+import { Sound } from '@/sb3/Sound'
 import { videoState } from '@/sb3/VideoState'
 import { Node } from './Node'
 
@@ -18,6 +20,8 @@ export type List = {
 
 export type Target = {
   costumes: Costume[]
+  sounds: Sound[]
+  broadcasts: Broadcasts
   variables: Variable[]
   lists: List[]
   blocks: Node[]
