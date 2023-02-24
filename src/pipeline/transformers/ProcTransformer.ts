@@ -1,6 +1,6 @@
 import { Nyair } from '@/ast/Nayir'
-import { NodeProceduresPrototype } from '@/ast/nodes/procedures'
-import { createNom, ModelList, NOM } from '@/nom'
+import { Node$ProcInput, NodeProceduresPrototype } from '@/ast/nodes/procedures'
+import { createNom, NOM } from '@/nom'
 import { NOMList } from '@/nom/NOMList'
 import { ScratchValue } from '@/sb3/ScratchValue'
 import { BaseTransformer } from '../Transformer'
@@ -107,7 +107,8 @@ export class ProcTransformer extends BaseTransformer {
 
       body
         .queryFnAll((node) => node.kind === '$proc_arg')
-        .forEach((arg) => {
+        .forEach((procArg) => {
+          const arg = procArg as NOM<Node$ProcInput>
           const argData = proc.args.find((argData) => argData.name === arg.name)
 
           if (!argData) {
