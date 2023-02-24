@@ -200,7 +200,7 @@ export class NyairCompiler implements Compiler {
 
     return {
       lists: lists.reduce(
-        (p, v) => ({ ...p, [createUID()]: [v.name, v.initialValue] }),
+        (p, v) => ({ ...p, [table.get(v.name)]: [v.name, v.initialValue] }),
         {} as Lists
       ),
       listTable: table,
